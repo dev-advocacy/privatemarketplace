@@ -231,9 +231,7 @@ OpenSSL note: OpenSSL is only required to extract a `.key` file from the generat
 
 This deployment assumes you manage VS Code clients centrally via Group Policy or MDM. The `extensionsGallery` configuration must be set via the registry or ADMX policies for your domain so clients pick up the gallery URL and item URLs.
 
-Detailed step-by-step instructions are available in `docs/GPO.md` and the official guide:
-
-- [GPO guidance](docs/GPO.md)
+See
 - https://github.com/microsoft/vsmarketplace/blob/main/privatemarketplace/latest/README.md#5-connect-vs-code-to-the-private-marketplace
 
 

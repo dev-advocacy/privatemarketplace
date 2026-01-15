@@ -14,6 +14,9 @@ Export-PfxCertificate -Cert $cert -FilePath $certPath -Password $pfxPassword
 # Export public cert
 Export-Certificate -Cert $cert -FilePath $crtPath
 
+# If OpenSSL is available, convert the exported CRT to PEM (nginx expects PEM). Export-Certificate
+# on Windows writes a DER-encoded .cer/.crt by default. Convert to PEM and overwrite the .crt file.
+
 # Extract private key and write as PEM (requires OpenSSL installed)
 # If openssl isn't on PATH, try to prepend Git for Windows bundle path where openssl often resides
 $gitOpenSslPath = 'C:\Program Files\Git\mingw64\bin'
@@ -28,6 +31,15 @@ if ($openssl) {
   & openssl pkcs12 -in $tempPfx -nodes -passin pass:privatemarketplace -out "$PSScriptRoot/../certs/temp.pem"
   & openssl pkey -in "$PSScriptRoot/../certs/temp.pem" -out $keyPath
   Remove-Item "$PSScriptRoot/../certs/temp.pfx","$PSScriptRoot/../certs/temp.pem" -ErrorAction SilentlyContinue
+  
+  # Convert DER-exported CRT to PEM and overwrite $crtPath so nginx can load it
+  try {
+    $pemCrt = "$PSScriptRoot/../certs/privatemarketplace.crt.pem"
+    & openssl x509 -in $crtPath -inform DER -out $pemCrt
+    Move-Item -Path $pemCrt -Destination $crtPath -Force
+  } catch {
+    Write-Host "Warning: failed to convert $crtPath to PEM: $_"
+  }
 } else {
   Write-Host "OpenSSL not found; private key PEM not created. Install OpenSSL to generate .key file for nginx or add it to PATH."
 }
