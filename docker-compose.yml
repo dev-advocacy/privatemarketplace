@@ -1,0 +1,29 @@
+services:
+  privatemarketplace:
+    image: mcr.microsoft.com/vsmarketplace/vscode-private-marketplace:latest
+    container_name: privatemarketplace
+    ports:
+      - "8080:8080"
+    environment:
+      - Marketplace__ExtensionSourceDirectory=/data/extensions
+      - Marketplace__Upstreaming__Mode=None
+      - ASPNETCORE_URLS=http://+:8080
+      - Marketplace__Logging__LogToConsole=true
+      - Marketplace__Logging__LogLevel=Debug
+    volumes:
+      - ./extensions:/data/extensions:ro
+
+  nginx-proxy:
+    image: nginx:stable-alpine
+    container_name: pm-nginx
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./certs:/etc/ssl/private:ro
+    depends_on:
+      - privatemarketplace
+
+networks:
+  default:
+    driver: bridge

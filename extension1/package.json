@@ -1,0 +1,32 @@
+{
+  "name": "gillesg-test",
+  "publisher": "localtest",
+  "displayName": "gillesg tester",
+  "description": "VS Code extension to test a local Private Marketplace deployment and open its URL.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "main": "extension.js",
+  "scripts": {
+    "package": "vsce package"
+  },
+  "keywords": ["private","marketplace","dev","docker"],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourname/gillesg-test.git"
+  },
+  "activationEvents": [
+    "onCommand:privateMarketplace.testDeployment"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "privateMarketplace.testDeployment",
+        "title": "Test Private Marketplace Deployment"
+      }
+    ]
+  }
+}
